@@ -11,8 +11,15 @@ class IncomeInformationPage extends StatefulWidget {
 
 class _IncomeInformationPageState extends State<IncomeInformationPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _annualSalaryController = TextEditingController();
-  final TextEditingController _monthlyRentController = TextEditingController();
+  late TextEditingController _annualSalaryController;
+  late TextEditingController _monthlyRentController;
+
+  @override
+  void initState() {
+    super.initState();
+    _annualSalaryController = TextEditingController(text: widget.userData.annualSalary.toString());
+    _monthlyRentController = TextEditingController(text: widget.userData.monthlyRent.toString());
+  }
 
   @override
   void dispose() {
@@ -67,10 +74,6 @@ class _IncomeInformationPageState extends State<IncomeInformationPage> {
 
               // Calculate taxes
               widget.userData.owedInTaxes = widget.userData.changeNumber(widget.userData);
-
-              // Update other tax related fields
-              // For example:
-              // widget.userData.stateIncomeTax = ...
 
               // Notify the rest of the app
               widget.userData.updateData();

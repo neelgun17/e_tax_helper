@@ -43,7 +43,7 @@ class Summary extends StatelessWidget {
                   style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
                 Text(
-                  userData.owedInTaxes.toStringAsFixed(2),
+                  userData.changeNumber(userData).toStringAsFixed(2),
                   style: TextStyle(color: Colors.black, fontSize: 38),
                 ),
                 Text(
@@ -95,7 +95,7 @@ class Summary extends StatelessWidget {
                   const Divider(),
                   _buildSection("Medicare tax", "\$100.00"), // Replace with actual calculations
                   const Divider(),
-                  _buildSection("Total taxes owed", "\$${userData.owedInTaxes.toStringAsFixed(2)}"),
+                  _buildSection("Total taxes owed", "\$${userData.changeNumber(userData).toStringAsFixed(2)}"),
                   const Divider(),
                   _buildSection("Income after Taxes", "\$1000.00"), // Replace with actual calculations
                 ],
