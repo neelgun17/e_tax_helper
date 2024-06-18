@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../Model/user_data.dart';
+import 'package:e_tax_helper/Model/user_data.dart';
 
 class Summary extends StatelessWidget {
   final UserData userData;
@@ -12,7 +12,7 @@ class Summary extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            buildBackground(),
+            buildBackground(context),
             Expanded(
               child: buildBreakdown(),
             ),
@@ -22,14 +22,14 @@ class Summary extends StatelessWidget {
     );
   }
 
-  Widget buildBackground() => Align(
+  Widget buildBackground(BuildContext context) => Align(
         alignment: Alignment.topCenter,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(15),
           child: Container(
             width: double.infinity,
             height: 150,
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(9),
             decoration: BoxDecoration(
               color: const Color(0xFFD3D3D3),
               borderRadius: BorderRadius.circular(24),
@@ -38,17 +38,47 @@ class Summary extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Amount owed in Taxes',
                   style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
                 Text(
                   userData.changeNumber(userData).toStringAsFixed(2),
-                  style: TextStyle(color: Colors.black, fontSize: 38),
+                  style: const TextStyle(color: Colors.black, fontSize: 38),
                 ),
-                Text(
-                  'Potential ways to save',
-                  style: TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontSize: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Potential ways to save',
+                      style: TextStyle(color: Color.fromARGB(255, 0, 0, 0), fontSize: 14),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.info_outline),
+                      color: Colors.black,
+                      iconSize: 15,
+                      tooltip: 'Detailed ways to save',
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('How to Save'),
+                              content: const Text('Here are some detailed ways to save on your taxes...'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('Close'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -82,8 +112,9 @@ class Summary extends StatelessWidget {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.bold,
                           fontSize: 19,
-                          color: Colors.black),
+                          color: Colors.black,
                         ),
+                      ),
                     ),
                   ),
                   const Divider(),
@@ -95,7 +126,7 @@ class Summary extends StatelessWidget {
                   const Divider(),
                   _buildSection("Medicare tax", "\$100.00"), // Replace with actual calculations
                   const Divider(),
-                  _buildSection("Total taxes owed", "\$${userData.changeNumber(userData).toStringAsFixed(2)}"),
+                  _buildSection("Total taxes owed", "\$${userData.owedInTaxes.toStringAsFixed(2)}"),
                   const Divider(),
                   _buildSection("Income after Taxes", "\$1000.00"), // Replace with actual calculations
                 ],

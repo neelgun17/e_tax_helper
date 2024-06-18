@@ -51,6 +51,7 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('eTax Helper'),
+          backgroundColor: Colors.green,
           leading: Builder(
             builder: (BuildContext context) {
               return IconButton(
@@ -92,7 +93,7 @@ class _MyAppState extends State<MyApp> {
               ),
               ListTile(
                 leading: const Icon(Icons.person),
-                title: const Text('Personal Info'),
+                title: const Text('Information'),
                 onTap: () => onItemTapped(2),
               ),
             ],

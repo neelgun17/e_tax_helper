@@ -62,4 +62,12 @@ class UserData {
     }
     return taxPaid;
   }
+
+  double socialSecurity(UserData userData){
+
+    return 0.0;
+  }
+  double netIncome(UserData userData){
+    return userData.annualSalary - userData.totalTaxes;
+  }
 }

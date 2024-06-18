@@ -16,56 +16,15 @@ class _PersonalState extends State<PersonalPage> {
   final numberOfDependentsController = TextEditingController();
   final ageController = TextEditingController();
   final List<String> _usStates = [
-    "Alabama",
-    "Alaska",
-    "Arizona",
-    "Arkansas",
-    "California",
-    "Colorado",
-    "Connecticut",
-    "Delaware",
-    "Florida",
-    "Georgia",
-    "Hawaii",
-    "Idaho",
-    "Illinois",
-    "Indiana",
-    "Iowa",
-    "Kansas",
-    "Kentucky",
-    "Louisiana",
-    "Maine",
-    "Maryland",
-    "Massachusetts",
-    "Michigan",
-    "Minnesota",
-    "Mississippi",
-    "Missouri",
-    "Montana",
-    "Nebraska",
-    "Nevada",
-    "New Hampshire",
-    "New Jersey",
-    "New Mexico",
-    "New York",
-    "North Carolina",
-    "North Dakota",
-    "Ohio",
-    "Oklahoma",
-    "Oregon",
-    "Pennsylvania",
-    "Rhode Island",
-    "South Carolina",
-    "South Dakota",
-    "Tennessee",
-    "Texas",
-    "Utah",
-    "Vermont",
-    "Virginia",
-    "Washington",
-    "West Virginia",
-    "Wisconsin",
-    "Wyoming"
+    "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", 
+    "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", 
+    "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", 
+    "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", 
+    "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", 
+    "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", 
+    "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", 
+    "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", 
+    "Washington", "West Virginia", "Wisconsin", "Wyoming"
   ];
   String? _selectedState;
 
@@ -73,6 +32,9 @@ class _PersonalState extends State<PersonalPage> {
   void initState() {
     super.initState();
     _loadData();
+
+    numberOfDependentsController.addListener(_saveData);
+    ageController.addListener(_saveData);
   }
 
   void _loadData() async {
@@ -86,14 +48,22 @@ class _PersonalState extends State<PersonalPage> {
 
   void _saveData() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-        'numberOfDependents', numberOfDependentsController.text);
+    setState(() {
+      widget.userData.dependents = int.tryParse(numberOfDependentsController.text) ?? 0;
+      widget.userData.age = int.tryParse(ageController.text) ?? 0;
+      widget.userData.state = _selectedState!;
+      widget.userData.updateData();
+    });
+
+    await prefs.setString('numberOfDependents', numberOfDependentsController.text);
     await prefs.setString('age', ageController.text);
     await prefs.setString('state', _selectedState!);
   }
 
   @override
   void dispose() {
+    numberOfDependentsController.removeListener(_saveData);
+    ageController.removeListener(_saveData);
     numberOfDependentsController.dispose();
     ageController.dispose();
     super.dispose();
@@ -137,34 +107,9 @@ class _PersonalState extends State<PersonalPage> {
                 ),
                 _buildStateSelectionField(),
                 _buildAdditionalQuestions(),
-                _buildSaveButton(context),
               ],
             )),
       ),
-    );
-  }
-
-  Widget _buildSaveButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
-        if (_formKey.currentState!.validate()) {
-          setState(() {
-            widget.userData.dependents =
-                int.tryParse(numberOfDependentsController.text) ?? 0;
-            widget.userData.age = int.tryParse(ageController.text) ?? 0;
-            widget.userData.state = _selectedState!;
-            widget.userData.updateData();
-          });
-          _saveData();
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(
-                    "Dependents: ${widget.userData.dependents}, Age: ${widget.userData.age}, State: ${widget.userData.state}")),
-          );
-        }
-      },
-      child: const Icon(Icons.save),
     );
   }
 
@@ -211,21 +156,19 @@ class _PersonalState extends State<PersonalPage> {
           return const Iterable<String>.empty();
         }
         return _usStates.where((String state) {
-          return state
-              .toLowerCase()
-              .startsWith(textEditingValue.text.toLowerCase());
+          return state.toLowerCase().startsWith(textEditingValue.text.toLowerCase());
         });
       },
       onSelected: (String selectedState) {
         setState(() {
           _selectedState = selectedState;
           widget.userData.state = selectedState;
+          widget.userData.updateData();
+          _saveData();
         });
       },
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController fieldTextEditingController,
-          FocusNode fieldFocusNode,
-          VoidCallback onFieldSubmitted) {
+      fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController,
+          FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
         return TextFormField(
           controller: fieldTextEditingController,
           focusNode: fieldFocusNode,

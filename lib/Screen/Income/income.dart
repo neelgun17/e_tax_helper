@@ -10,7 +10,6 @@ class IncomeInformationPage extends StatefulWidget {
 }
 
 class _IncomeInformationPageState extends State<IncomeInformationPage> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late TextEditingController _annualSalaryController;
   late TextEditingController _monthlyRentController;
 
@@ -19,10 +18,24 @@ class _IncomeInformationPageState extends State<IncomeInformationPage> {
     super.initState();
     _annualSalaryController = TextEditingController(text: widget.userData.annualSalary.toString());
     _monthlyRentController = TextEditingController(text: widget.userData.monthlyRent.toString());
+
+    _annualSalaryController.addListener(_saveData);
+    _monthlyRentController.addListener(_saveData);
+  }
+
+  void _saveData() {
+    setState(() {
+      widget.userData.annualSalary = double.tryParse(_annualSalaryController.text) ?? 0.0;
+      widget.userData.monthlyRent = double.tryParse(_monthlyRentController.text) ?? 0.0;
+      widget.userData.owedInTaxes = widget.userData.changeNumber(widget.userData);
+      widget.userData.updateData();
+    });
   }
 
   @override
   void dispose() {
+    _annualSalaryController.removeListener(_saveData);
+    _monthlyRentController.removeListener(_saveData);
     _annualSalaryController.dispose();
     _monthlyRentController.dispose();
     super.dispose();
@@ -35,59 +48,22 @@ class _IncomeInformationPageState extends State<IncomeInformationPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey,
           child: ListView(
             children: <Widget>[
               TextFormField(
                 controller: _annualSalaryController,
                 decoration: const InputDecoration(labelText: 'What is your annual salary?'),
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your annual salary';
-                  }
-                  return null;
-                },
               ),
               TextFormField(
                 controller: _monthlyRentController,
                 decoration: const InputDecoration(labelText: 'What is your monthly rent/mortgage?'),
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your monthly rent/mortgage';
-                  }
-                  return null;
-                },
               ),
               // Add more questions as needed
             ],
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            setState(() {
-              widget.userData.annualSalary = double.tryParse(_annualSalaryController.text) ?? 0.0;
-              widget.userData.monthlyRent = double.tryParse(_monthlyRentController.text) ?? 0.0;
-
-              // Calculate taxes
-              widget.userData.owedInTaxes = widget.userData.changeNumber(widget.userData);
-
-              // Notify the rest of the app
-              widget.userData.updateData();
-            });
-
-            // Optionally show a snackbar
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Data saved. Tax owed: ${widget.userData.owedInTaxes}"),
-              ),
-            );
-          }
-        },
-        child: const Icon(Icons.save),
       ),
     );
   }
