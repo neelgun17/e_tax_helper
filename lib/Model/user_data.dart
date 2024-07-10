@@ -15,6 +15,7 @@ class UserData {
   double incomeAfterTaxes;
   double totalTaxes;
   double stateIncomeTax;
+  double federalIncomeTax;
 
   UserData({
     this.annualSalary = 0.0,
@@ -29,6 +30,8 @@ class UserData {
     this.incomeAfterTaxes = 0.0,
     this.totalTaxes = 0.0,
     this.stateIncomeTax = 0.0,
+    this.federalIncomeTax = 0.0,
+
   });
 
   void updateData() {
@@ -60,15 +63,15 @@ class UserData {
         break;
       }
     }
+    userData.federalIncomeTax = taxPaid;
     return taxPaid;
   }
 
-  double socialSecurity(UserData userData){
-
+  double socialSecurity(UserData userData) {
     return 0.0;
   }
 
-static const Map<String, dynamic> taxRates = {
+  static const Map<String, dynamic> taxRates = {
     'Alabama': [
       {'limit': 500.0, 'rate': 0.02},
       {'limit': 3000.0, 'rate': 0.04},
@@ -219,16 +222,18 @@ static const Map<String, dynamic> taxRates = {
       {'limit': 14600.0, 'rate': 0.05},
       {'limit': 18900.0, 'rate': 0.06},
       {'rate': 0.0675} // Over $18,900
-      ],
-      'Nebraska': [
+    ],
+    'Nebraska': [
       {'limit': 3380.0, 'rate': 0.0246},
       {'limit': 20200.0, 'rate': 0.0351},
       {'limit': 32210.0, 'rate': 0.0501},
       {'rate': 0.0684} // Over $32,210
-      ],
-      'Nevada': null, // No state income tax
-      'New Hampshire': {'flat': 0.05}, // Flat rate on dividends and interest income only
-      'New Jersey': [
+    ],
+    'Nevada': null, // No state income tax
+    'New Hampshire': {
+      'flat': 0.05
+    }, // Flat rate on dividends and interest income only
+    'New Jersey': [
       {'limit': 20000.0, 'rate': 0.014},
       {'limit': 35000.0, 'rate': 0.0175},
       {'limit': 40000.0, 'rate': 0.035},
@@ -236,15 +241,15 @@ static const Map<String, dynamic> taxRates = {
       {'limit': 500000.0, 'rate': 0.0637},
       {'limit': 5000000.0, 'rate': 0.0897},
       {'rate': 0.1075} // Over $5,000,000
-      ],
-      'New Mexico': [
+    ],
+    'New Mexico': [
       {'limit': 5500.0, 'rate': 0.017},
       {'limit': 11000.0, 'rate': 0.032},
       {'limit': 16000.0, 'rate': 0.047},
       {'limit': 21000.0, 'rate': 0.049},
       {'rate': 0.059} // Over $21,000
-      ],
-      'New York': [
+    ],
+    'New York': [
       {'limit': 8500.0, 'rate': 0.04},
       {'limit': 11700.0, 'rate': 0.045},
       {'limit': 13900.0, 'rate': 0.0525},
@@ -253,98 +258,100 @@ static const Map<String, dynamic> taxRates = {
       {'limit': 215400.0, 'rate': 0.0649},
       {'limit': 1077550.0, 'rate': 0.0685},
       {'rate': 0.0882} // Over $1,077,550
-      ],
-      'North Carolina': {'flat': 0.0475}, // Flat rate
-      'North Dakota': [
+    ],
+    'North Carolina': {'flat': 0.0475}, // Flat rate
+    'North Dakota': [
       {'limit': 40525.0, 'rate': 0.011},
       {'limit': 98000.0, 'rate': 0.02},
       {'limit': 204675.0, 'rate': 0.022},
       {'limit': 445000.0, 'rate': 0.024},
       {'rate': 0.026} // Over $445,000
-      ],
-      'Ohio': [
+    ],
+    'Ohio': [
       {'limit': 21750.0, 'rate': 0.00}, // No tax under $21,750
       {'limit': 43500.0, 'rate': 0.0285},
       {'limit': 87000.0, 'rate': 0.03326},
       {'rate': 0.03802} // Over $87,000
-      ],
-      'Oklahoma': [
+    ],
+    'Oklahoma': [
       {'limit': 1000.0, 'rate': 0.005},
       {'limit': 2500.0, 'rate': 0.01},
       {'limit': 3750.0, 'rate': 0.02},
       {'limit': 4900.0, 'rate': 0.03},
       {'limit': 7200.0, 'rate': 0.04},
       {'rate': 0.05} // Over $7,200
-      ],
-      'Oregon': [
+    ],
+    'Oregon': [
       {'limit': 3650.0, 'rate': 0.0475},
       {'limit': 9200.0, 'rate': 0.0675},
       {'limit': 125000.0, 'rate': 0.0875},
       {'rate': 0.099} // Over $125,000
-      ],
-      'Pennsylvania': {'flat': 0.0307}, // Flat rate
-      'Rhode Island': [
+    ],
+    'Pennsylvania': {'flat': 0.0307}, // Flat rate
+    'Rhode Island': [
       {'limit': 68200.0, 'rate': 0.0375},
       {'limit': 155050.0, 'rate': 0.0475},
       {'rate': 0.0599} // Over $155,050
-      ],
-      'South Carolina': [
+    ],
+    'South Carolina': [
       {'limit': 3070.0, 'rate': 0.0}, // No tax under $3,070
       {'limit': 6150.0, 'rate': 0.03},
       {'limit': 9240.0, 'rate': 0.04},
       {'limit': 12320.0, 'rate': 0.05},
       {'limit': 15400.0, 'rate': 0.06},
       {'rate': 0.07} // Over $15,400
-      ],
-      'South Dakota': null, // No state income tax
-      'Tennessee': null, // No state income tax (used to tax interest and dividends only)
-      'Texas': null, // No state income tax
-      'Utah': {'flat': 0.0485}, // Flat rate
-      'Vermont': [
+    ],
+    'South Dakota': null, // No state income tax
+    'Tennessee':
+        null, // No state income tax (used to tax interest and dividends only)
+    'Texas': null, // No state income tax
+    'Utah': {'flat': 0.0485}, // Flat rate
+    'Vermont': [
       {'limit': 41500.0, 'rate': 0.0335},
       {'limit': 99200.0, 'rate': 0.066},
       {'limit': 206950.0, 'rate': 0.076},
       {'rate': 0.0875} // Over $206,950
-      ],
-      'Virginia': [
+    ],
+    'Virginia': [
       {'limit': 3000.0, 'rate': 0.02},
       {'limit': 5000.0, 'rate': 0.03},
       {'limit': 17000.0, 'rate': 0.05},
       {'rate': 0.0575} // Over $17,000
-      ],
-      'Washington': null, // No state income tax
-      'West Virginia': [
+    ],
+    'Washington': null, // No state income tax
+    'West Virginia': [
       {'limit': 10000.0, 'rate': 0.03},
       {'limit': 25000.0, 'rate': 0.04},
       {'limit': 40000.0, 'rate': 0.045},
       {'limit': 60000.0, 'rate': 0.06},
       {'rate': 0.065} // Over $60,000
-      ],
-      'Wisconsin': [
+    ],
+    'Wisconsin': [
       {'limit': 12860.0, 'rate': 0.0354},
       {'limit': 25830.0, 'rate': 0.0465},
       {'limit': 28420.0, 'rate': 0.0627},
       {'rate': 0.0765} // Over $284,20
-      ],
-      'Wyoming': null, // No state income tax
-      'District of Columbia': [
+    ],
+    'Wyoming': null, // No state income tax
+    'District of Columbia': [
       {'limit': 10000.0, 'rate': 0.04},
       {'limit': 40000.0, 'rate': 0.06},
       {'limit': 60000.0, 'rate': 0.065},
       {'limit': 350000.0, 'rate': 0.085},
       {'limit': 1000000.0, 'rate': 0.0875},
       {'rate': 0.0975} // Over $1,000,000
-      ],
+    ],
     // Add more states here
   };
 
-double calculateStateTax(UserData userData) {
+  double calculateStateTax(UserData userData) {
     var stateTax = taxRates[userData.state];
     double income = userData.annualSalary;
-    
+
     if (stateTax == null) {
       return 0.0; // No state income tax
-    } else if (stateTax is Map<String, dynamic> && stateTax.containsKey('flat')) {
+    } else if (stateTax is Map<String, dynamic> &&
+        stateTax.containsKey('flat')) {
       return income * stateTax['flat'];
     } else if (stateTax is List) {
       double tax = 0.0;
@@ -353,7 +360,8 @@ double calculateStateTax(UserData userData) {
       for (var bracket in stateTax) {
         if (bracket.containsKey('limit')) {
           double limit = bracket['limit'] as double;
-          double taxableIncome = remainingIncome > limit ? limit : remainingIncome;
+          double taxableIncome =
+              remainingIncome > limit ? limit : remainingIncome;
           tax += taxableIncome * bracket['rate'];
           remainingIncome -= taxableIncome;
         } else {
@@ -361,14 +369,63 @@ double calculateStateTax(UserData userData) {
           break;
         }
       }
-      print(tax);
+      userData.stateIncomeTax = tax;
       return tax;
     } else {
       throw Exception('Invalid state tax data');
     }
   }
-  
-  double netIncome(UserData userData){
-    return userData.annualSalary - userData.totalTaxes;
+
+  double calculateSocialSecurityTax(UserData userData) {
+    const double socialSecurityTaxRate = 0.062;
+    const double socialSecurityWageBase = 160200.0;
+    double income = userData.annualSalary;
+    if (income <= socialSecurityWageBase) {
+      userData.ss = income * socialSecurityTaxRate;
+      return income * socialSecurityTaxRate;
+    } else {
+      userData.ss = socialSecurityWageBase * socialSecurityTaxRate;
+      return socialSecurityWageBase * socialSecurityTaxRate;
+    }
+  }
+
+  double calculateMedicareTax(UserData userData) {
+    const double medicareTaxRate = 0.0145;
+    const double additionalMedicareTaxRate = 0.009;
+    const double additionalMedicareTaxThreshold = 200000.0;
+    const double additionalMedicareTaxThresholdMarried = 250000.0;
+    double additionalMedicareTax = 0;
+    double income = userData.annualSalary;
+    if (income <= additionalMedicareTaxThreshold) {
+      userData.medicare = income * medicareTaxRate;
+      return income * medicareTaxRate;
+    } else {
+      double baseMedicareTax = additionalMedicareTaxThreshold * medicareTaxRate;
+      if (userData.fillingStatus == "Married, filling jointly") {
+        additionalMedicareTax =
+            (income - additionalMedicareTaxThresholdMarried) *
+                additionalMedicareTaxRate;
+      } else {
+        additionalMedicareTax =
+            (income - additionalMedicareTaxThreshold) *
+                additionalMedicareTaxRate;
+      }
+       userData.medicare = baseMedicareTax + additionalMedicareTax;
+      return baseMedicareTax + additionalMedicareTax;
+    }
+  }
+
+  double calculateTotalTaxes(UserData userData) {
+    double totalTaxes = userData.stateIncomeTax + userData.medicare + userData.ss + userData.federalIncomeTax;
+    userData.totalTaxes = totalTaxes;
+    print(userData.stateIncomeTax);
+    print(userData.medicare);
+    print(userData.ss);   
+    print(userData.federalIncomeTax);  
+    return totalTaxes;
+  }
+
+  double netIncome(UserData userData) {
+    return userData.annualSalary - calculateTotalTaxes(userData);
   }
 }

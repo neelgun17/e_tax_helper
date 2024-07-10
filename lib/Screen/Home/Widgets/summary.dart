@@ -43,7 +43,7 @@ class Summary extends StatelessWidget {
                   style: TextStyle(color: Colors.black, fontSize: 20),
                 ),
                 Text(
-                  userData.changeNumber(userData).toStringAsFixed(2),
+                  userData.calculateTotalTaxes(userData).toStringAsFixed(2),
                   style: const TextStyle(color: Colors.black, fontSize: 38),
                 ),
                 Row(
@@ -122,13 +122,13 @@ class Summary extends StatelessWidget {
                   const Divider(),
                   _buildSection("State income tax", "\$${userData.calculateStateTax(userData).toStringAsFixed(2)}"), // Replace with actual calculations
                   const Divider(),
-                  _buildSection("Social Security tax", "\$200.00"), // Replace with actual calculations
+                  _buildSection("Social Security tax", "\$${userData.calculateSocialSecurityTax(userData).toStringAsFixed(2)}"), // Replace with actual calculations
                   const Divider(),
-                  _buildSection("Medicare tax", "\$100.00"), // Replace with actual calculations
+                  _buildSection("Medicare tax","\$${userData.calculateMedicareTax(userData).toStringAsFixed(2)}"), // Replace with actual calculations
                   const Divider(),
-                  _buildSection("Total taxes owed", "\$${userData.owedInTaxes.toStringAsFixed(2)}"),
+                  _buildSection("Total taxes owed", "\$${userData.calculateTotalTaxes(userData).toStringAsFixed(2)}"),
                   const Divider(),
-                  _buildSection("Income after Taxes", "\$1000.00"), // Replace with actual calculations
+                  _buildSection("Income after Taxes", "\$${userData.netIncome(userData).toStringAsFixed(2)}"), // Replace with actual calculations
                 ],
               ),
             ),
