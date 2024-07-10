@@ -120,7 +120,7 @@ class Summary extends StatelessWidget {
                   const Divider(),
                   _buildSection("Federal income tax", "\$${userData.changeNumber(userData).toStringAsFixed(2)}"),
                   const Divider(),
-                  _buildSection("State income tax", "\$500.00"), // Replace with actual calculations
+                  _buildSection("State income tax", "\$${userData.calculateStateTax(userData).toStringAsFixed(2)}"), // Replace with actual calculations
                   const Divider(),
                   _buildSection("Social Security tax", "\$200.00"), // Replace with actual calculations
                   const Divider(),
